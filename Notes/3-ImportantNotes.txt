@@ -1,0 +1,39 @@
+Looping using List comprehension:
+
+mylist = ['yadhu','is','great']
+[print(x) for x in mylist]
+..................................................
+Without List comprehension:
+
+mylist = ['yadhu','is','great','coder','isaaa']
+newlist = []
+for i in mylist:
+    if 'i' in i:
+        newlist.append(i)
+print(newlist)
+
+
+With comprehension:
+
+mylist = ['yadhu','is','great','coder','isaaa']
+newlist = [x for x in mylist if 'i' in x]
+print(newlist)
+
+syntax:
+newlist = [expression for item in iterable if condition == True]
+
+eg:
+newlist = [x if x != "banana" else "orange" for x in fruits]
+
+..................................................
+Sorting
+
+# using key
+def diff(n):
+    return abs(n - 100)
+
+mylist = [1,267,90,4,2,6]
+
+mylist.sort(key = diff)
+print(mylist)
+.........................................................

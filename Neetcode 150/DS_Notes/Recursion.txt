@@ -1,0 +1,23 @@
+Single Branch Recursion
+.....................................
+Calculate factorial of a number
+.....................................
+def factorial(n):
+    if n <= 1:  #Stopping criteria
+        return 1
+    return n * factorial(n - 1) # single branch
+
+print(factorial(5))
+......................................
+
+......................................
+Two Branch Recursion
+......................................
+ 
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2) # two branch
+
+print(fibonacci(5))
+.........................................

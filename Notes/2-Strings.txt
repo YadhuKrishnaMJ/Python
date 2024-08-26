@@ -1,0 +1,97 @@
+Quotes within quotes
+    vice versa
+    ex:
+        print("my name is 'yadhu' ")
+...................................................................................................
+Multiline String:
+    ex:
+        a = """
+        My name is yadhu
+        the great 
+        python 
+        coder
+        """
+
+        print(a)
+....................................................................................................
+Access String characters:
+    characters in python are str of len(1)
+    ex:
+        text = "Yadhu"
+        print(text[2]);
+....................................................................................................
+
+Print Each letter in str:
+
+text = ' yadhu is a great python coder'
+for i in text:
+    print(i)
+
+................................................................................................
+len() function:
+
+text = ' yadhu is a great python coder'
+print(len(text))
+
+..................................................................................................
+Check presence of String:
+
+text = ' yadhu is a great python coder'
+
+if "yadhu" in text:
+    print('yes')
+...................................................................................................
+String Slicing:
+
+text = 'abcdefghijklmno'
+
+print(text[:4],text[1:],text[3:5],text[-5:-1])
+
+output= abcd bcdefghijklmno de klmn
+....................................................................................................
+String modify:
+
+
+text = 'yadhu '
+
+#string methods
+print(text.upper())
+print(text.lower())
+print(text.replace('y','k'))
+print(text.split('a'))
+print(text.strip())
+
+'''
+YADHU 
+yadhu
+kadhu
+['y', 'dhu ']
+yadhu
+'''
+
+#string concatenate 
+print(text.strip() + " is" + ' cool')
+'''yadhu is cool'''
+
+
+#fstring
+money = 100
+print(f'The amount of money yadhu has is {money:.2f}')
+
+'''The amount of money yadhu has is 100.00'''
+
+#escape character
+print("yadhu is a \"crazy\" python programmer ")
+
+......................................................................................................................
+text = ''
+num = 0
+
+print(bool(num),bool(text))
+ 
+gives false for both
+.............................................................................................................
+
+
+
+

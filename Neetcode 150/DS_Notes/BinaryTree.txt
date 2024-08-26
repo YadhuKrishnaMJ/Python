@@ -1,0 +1,318 @@
+Root Nodes -> Topmost Nodes
+Bottom Most Node -> Leaf Nodes
+.....................................................
+Child, Sibling, Parent, Descendant, Ancestor
+.....................................................
+Height -> distance to the lowest leaf node
+Depth -> distance from node to root Node
+.....................................................
+class TreeNode:
+    def init(self,val):
+        self.val = val
+        self.left = None
+        self.right = None
+
+root = TreeNode(1)
+leftChild = TreeNode(2)
+rightChild =TreeNode(3)
+
+root.left = leftChild
+root.right = rightChild
+
+.....................................................
+Binary search Tree
+.....................................................
+
+At every Node, Left subtree value should be lesser, right subtree should be greater
+No duplicates
+.....................................................................................
+ BST Traversal
+ ....................................................................................
+ Traversal BST:
+    O(log(n)) -> if BST is balanced
+    O(n) or O(h) -> if tree is unbalanced or skewed
+
+Insertion and deletion -> O(Log(n))
+.....................................................................................
+class TreeNode:
+    def __init__(self, n):
+        self.val = n
+        self.left = None
+        self.right = None
+    
+#BST search function
+def searchBST(root,target):
+    if not root:
+        return False
+
+    if target < root.val:
+        return searchBST(root.left,target)
+    elif target > root.val:
+        return searchBST(root.right, target)
+    else:
+        return True
+    
+root = TreeNode(3)
+root.left = TreeNode(2)
+root.right = TreeNode(4)
+root.left.left = TreeNode(1)
+..........................................................................
+Inserting into a BST
+..........................................................................
+
+def insert(root,val):
+    if not root:
+        return TreeNode(val)    
+    if val < root.val:
+        root.left = insert(root.left,val)
+    elif val > root.val:
+        root.right = insert(root.right,val)
+    return root
+..........................................................................
+Finding min in a BST
+..........................................................................
+def findMin(root):
+    #pointer to root
+    curr = root
+    #iterate till end
+    while curr and curr.left:
+        curr = curr.left
+    return curr.val
+.........................................................................
+BST Remove
+.........................................................................
+def remove(root,val):
+    #return None if reached end
+    if not root:
+        return None
+    #iterate to left or right tree based on val
+    if val < root.val:
+        root.left = remove(root.left,val)
+    elif val > root.val:
+        root.right = remove(root.right,val)
+    
+    #remove part
+    else:
+        #case 1 : one child or no child
+        if not root.left:
+            return root.right
+        elif not root.right:
+            return root.left
+        #case 2 : two child (find min)
+        else:
+            minNode = findMin(root.right)   #find minNode from rigth subtree
+            root.val = minNode.val      #update current root with minNode
+            root.right = remove(root.right,minNode.val)     #remove that minNode
+    return root
+...........................................................................
+DFS 
+...........................................................................
+def inorder(root): 
+    if not root:
+        return
+    inorder(root.left)
+    print(root.val)
+    inorder(root.right)
+
+def preorder(root):
+    if not root:
+        return
+    print(root)
+    preorder(root.left)
+    preorder(root.right)
+
+def postorder(root):
+    if not root:
+        return
+    postorder(root.left)
+    postorder(root.right)
+    print(root)
+...........................................................................
+BFS
+...........................................................................
+We use Queue Data Structure for BFS
+BFS is done iteratively
+
+Code:
+
+def BFS(root):
+    queue = deque()
+    
+    if root:
+        queue.append(root)
+
+    level = 0
+    while len(queue) > 0:
+        print('level:',level)
+        for i in range(len(queue)):
+            curr = queue.popleft()   
+            print(curr.val)
+            if curr.left:
+                queue.append(curr.left)
+            if curr.right:
+                queue.append(curr.right)
+        level +=1
+..............................................................................
+ Sets and Maps are implemented using Binary Tree
+..............................................................................
+Full Implementation
+..............................................................................
+
+from collections import deque
+
+# Node class for creating a tree node
+class TreeNode:
+    def __init__(self, n):
+        self.val = n  # Assign the node value
+        self.left = None  # Initialize the left child as None
+        self.right = None  # Initialize the right child as None 
+
+# Function to search for a value in a BST
+def searchBST(root, target):
+    # Base case: if the tree is empty or the target is found
+    if not root:
+        return False
+
+    # If target is smaller, search in the left subtree
+    if target < root.val:
+        return searchBST(root.left, target)
+    # If target is larger, search in the right subtree
+    elif target > root.val:
+        return searchBST(root.right, target)
+    # If target matches the current node value, return True
+    else:
+        return True
+
+# Function to insert a value into the BST
+def insert(root, val):
+    # Base case: if the tree is empty, create a new node
+    if not root:
+        return TreeNode(val)
+
+    # If the value is smaller, insert it into the left subtree
+    if val < root.val:
+        root.left = insert(root.left, val)
+    # If the value is larger, insert it into the right subtree
+    elif val > root.val:
+        root.right = insert(root.right, val)
+    
+    return root
+    
+# Function to find the minimum value node in a BST
+def findMin(root):
+    # Initialize a pointer to the root node
+    curr = root
+    # Traverse to the leftmost node (minimum value node)
+    while curr and curr.left:
+        curr = curr.left
+    return curr
+
+# Function to remove a node with a given value from the BST
+def remove(root, val):
+    # Base case: if the tree is empty, return None
+    if not root:
+        return None
+
+    # If the value is smaller, continue to the left subtree
+    if val < root.val:
+        root.left = remove(root.left, val)
+    # If the value is larger, continue to the right subtree
+    elif val > root.val:
+        root.right = remove(root.right, val)
+    
+    # If the value matches the current node
+    else:
+        # Case 1: Node with one child or no child
+        if not root.left:
+            return root.right
+        elif not root.right:
+            return root.left
+        
+        # Case 2: Node with two children
+        else:
+            # Find the minimum value node in the right subtree
+            minNode = findMin(root.right)
+            # Replace the current node's value with the minNode's value
+            root.val = minNode.val
+            # Remove the minNode
+            root.right = remove(root.right, minNode.val)
+    
+    return root
+
+# Function for inorder traversal of BST
+def inorder(root): 
+    if not root:
+        return
+    # Traverse left subtree
+    inorder(root.left)
+    # Visit node
+    print(root.val)
+    # Traverse right subtree
+    inorder(root.right)
+
+# Function for preorder traversal of BST
+def preorder(root):
+    if not root:
+        return
+    # Visit node
+    print(root.val)
+    # Traverse left subtree
+    preorder(root.left)
+    # Traverse right subtree
+    preorder(root.right)
+
+# Function for postorder traversal of BST
+def postorder(root):
+    if not root:
+        return
+    # Traverse left subtree
+    postorder(root.left)
+    # Traverse right subtree
+    postorder(root.right)
+    # Visit node
+    print(root.val)
+
+# Function for Breadth-First Search (BFS) of BST
+def BFS(root):
+    # Initialize a queue for BFS
+    queue = deque()
+    
+    if root:
+        queue.append(root)
+
+    level = 0  # Initialize level for BFS
+    while len(queue) > 0:
+        print('Level:', level)
+        # Process all nodes at the current level
+        for i in range(len(queue)):
+            curr = queue.popleft()
+            print(curr.val)
+            # Enqueue left child
+            if curr.left:
+                queue.append(curr.left)
+            # Enqueue right child
+            if curr.right:
+                queue.append(curr.right)
+        level += 1
+
+# Initialize the root of the BST
+root = TreeNode(3)
+root.left = TreeNode(2)
+root.right = TreeNode(4)
+root.left.left = TreeNode(1)
+
+# Insert a new node into the BST
+insert(root, 5)
+
+# Searching for a target value in the BST
+print('Enter a number to search:')
+target = int(input())
+print(searchBST(root, target))
+
+# Finding the minimum value in the BST
+print('The smallest element is', findMin(root).val)
+
+# Perform BFS traversal of the BST
+BFS(root)
+......................................................................................
+......................................................................................

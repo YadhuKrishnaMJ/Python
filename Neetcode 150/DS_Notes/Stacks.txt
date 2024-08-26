@@ -1,0 +1,34 @@
+Stacks:
+Push
+Pop
+Peek
+
+all O(1) time complexity
+Last in First Out Datastructure 
+...................................................
+Implement using Dynamic Array
+...................................................
+class stack:
+    def __init__(self):
+        self.st = []
+
+    def push(self,n):
+        self.st.append(n)
+
+    def pop(self):
+        return self.st.pop()
+    
+    def peek(self):
+        if self.st != []:
+            return self.st[len(self.st)-1]
+        else:
+            return "Stack is Empty"
+    
+myStack = stack()
+
+myStack.push(3)
+myStack.pop()
+myStack.push(5)
+myStack.pop()
+print(myStack.peek())
+.....................................................

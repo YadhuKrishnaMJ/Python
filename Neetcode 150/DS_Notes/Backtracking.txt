@@ -1,0 +1,251 @@
+Backtracking
+....................................
+Similar to DFS
+Example Question:
+
+Determine if path exists from root to leaf without any 0 in between
+
+def canReachLeaf(root):
+    if not root or root.val == 0:
+        return False
+    if not root.left and not root.right:
+        return True
+    if canReachLeaf(root.left):
+        return True
+    if canReachLeaf(root.right):
+        return True
+    return False
+........................................................................
+Same problem but return the values
+
+def canReachLeaf(root,path):
+    if not root or root.val == 0:
+        return False
+    path.append(root.val)
+
+    if not root.left and not root.right:
+        return True
+    if canReachLeaf(root.left,path):
+        return True
+    if canReachLeaf(root.right,path):
+        return True
+    path.pop()
+    return False
+...........................................................................
+Subsets
+...........................................................................
+
+Q . Given in a List of distinct numbers, return all possible distinct Subsets
+
+2**n Subsets
+at each level in tree, we create subsets by considering to keep an element or not
+
+Time complexity -> O(n.2**n)
+.......................................................................................................... 
+
+code:
+
+# Helper function to generate all subsets using backtracking
+def backtrack(i, nums, currset, subsets):
+    # Base case: If the current index is out of bounds, add the current subset to the list of subsets
+    if i >= len(nums):
+        subsets.append(currset.copy())  # Add a copy of the current set to avoid reference issues
+        return
+    
+    # Case 1: Include nums[i] in the current subset
+    currset.append(nums[i])  # Add the current number to the current subset
+    backtrack(i + 1, nums, currset, subsets)  # Recur for the next element
+    currset.pop()  # Backtrack by removing the last added element
+
+    # Case 2: Exclude nums[i] from the current subset
+    backtrack(i + 1, nums, currset, subsets)  # Recur for the next element without including nums[i]
+
+# Function to generate all subsets of a list of distinct numbers
+def subsetsWithDistinctNums(nums):
+    currset, subsets = [], []  # Initialize current subset and list of all subsets
+    backtrack(0, nums, currset, subsets)  # Start backtracking from index 0
+    return subsets  # Return the list of all subsets
+
+# Example usage
+ans = subsetsWithDistinctNums([1, 2, 3])
+print(ans)  # Output all generated subsets
+
+.................................................................................................................
+Q) Now the subsets arent distinct has copies, so make subsets for this nums array
+
+code:
+
+# Helper function to generate all subsets using backtracking
+def backtrack(i, nums, currset, subsets):
+    # Base case: If the current index is out of bounds, add the current subset to the list of subsets
+    if i >= len(nums):
+        subsets.append(currset.copy())  # Add a copy of the current set to avoid reference issues
+        return
+    
+    # Case 1: Include nums[i] in the current subset
+    currset.append(nums[i])  # Add the current number to the current subset
+    backtrack(i + 1, nums, currset, subsets)  # Recur for the next element
+    currset.pop()  # Backtrack by removing the last added element
+
+    # Case 2: Exclude nums[i] from the current subset
+    # Skip over any duplicates to ensure subsets are unique
+    while i + 1 < len(nums) and nums[i] == nums[i + 1]: 
+        i += 1
+    backtrack(i + 1, nums, currset, subsets)  # Recur for the next element without including nums[i]
+
+# Function to generate all subsets of a list of numbers, handling duplicates
+def subsetsWithDuplicates(nums):
+    nums.sort()  # Sort the input list to group duplicates together
+    currset, subsets = [], []  # Initialize current subset and list of all subsets
+    backtrack(0, nums, currset, subsets)  # Start backtracking from index 0
+    return subsets  # Return the list of all subsets
+
+# Example usage
+ans = subsetsWithDuplicates([1, 2, 2, 3])
+print(*ans)  # Output all generated subsets
+
+...................................................................................................................................................
+Combinations
+...................................................................................................................................................
+Given n and k , return all possible combinations with 1...n of size k:
+
+# Helper function to generate all combinations using backtracking
+def backtrack(i, currcomb, combinations, n, k):
+
+    # Base case 1: If the current combination has reached the desired length (k)
+    if len(currcomb) == k:
+        combinations.append(currcomb.copy())  # Add a copy of the current combination to the list of combinations
+        return
+
+    # Base case 2: If i exceeds n, there's no more elements to consider
+    if i > n:
+        return 
+    
+    # Case 1: Include the current element (i) in the combination
+    currcomb.append(i)  # Add the current element to the current combination
+    backtrack(i + 1, currcomb, combinations, n, k)  # Recur with the next element
+    currcomb.pop()  # Backtrack by removing the last added element
+
+    # Case 2: Exclude the current element (i) from the combination
+    backtrack(i + 1, currcomb, combinations, n, k)  # Recur with the next element without including i
+    
+
+# Function to generate all combinations of k elements from 1 to n
+def combinations(n, k):
+    currcomb, combinations = [], []  # Initialize the current combination and list of all combinations
+    backtrack(1, currcomb, combinations, n, k)  # Start backtracking from 1
+    return combinations  # Return the list of all combinations
+
+# Input processing
+inputlist = list(map(int, input().split()))  # Input two integers, n and k
+n, k = inputlist[0], inputlist[1]  # Assign the first input to n and the second to k
+print(*combinations(n, k))  # Output all generated combinations
+.....................................................................................................................................................
+Method 2: Optimized approach
+
+# Helper function to generate all combinations using backtracking
+def backtrack(i, currcomb, combinations, n, k):
+
+    # Base case 1: If the current combination has reached the desired length (k)
+    if len(currcomb) == k:
+        combinations.append(currcomb.copy())  # Add a copy of the current combination to the list of combinations
+        return
+
+    # Base case 2: If i exceeds n, there's no more elements to consider
+    if i > n:
+        return 
+    
+    # Iteratively add elements to the combination
+    for j in range(i, n + 1):  # Loop through all elements from i to n
+        currcomb.append(j)  # Add the current element (j) to the combination
+        backtrack(j + 1, currcomb, combinations, n, k)  # Recur with the next element (j+1)
+        currcomb.pop()  # Backtrack by removing the last added element
+
+# Function to generate all combinations of k elements from 1 to n
+def combinations(n, k):
+    currcomb, combinations = [], []  # Initialize the current combination and list of all combinations
+    backtrack(1, currcomb, combinations, n, k)  # Start backtracking from 1
+    return combinations  # Return the list of all combinations
+
+# Input processing
+inputlist = list(map(int, input().split()))  # Input two integers, n and k
+n, k = inputlist[0], inputlist[1]  # Assign the first input to n and the second to k
+print(*combinations(n, k))  # Output all generated combinations
+
+.......................................................................................................................................
+Permutations
+...........................................................................................................................................
+Recursive Code:
+
+# Function to generate permutations recursively using backtracking
+def backtrack(i, nums):
+    # Base case: If the index i is equal to the length of the list nums, 
+    # we return a list containing an empty list as a starting point for building permutations.
+    if i == len(nums):
+        return [[]]
+
+    # This will store the current set of permutations
+    currPerm = []
+
+    # Recursively generate permutations for the sublist starting from index i+1
+    perms = backtrack(i + 1, nums)
+
+    # For each permutation generated so far, insert nums[i] at every possible position
+    for perm in perms:
+        for j in range(len(perm) + 1):
+            # Create a copy of the current permutation
+            permCopy = perm.copy()
+            
+            # Insert the current number nums[i] at position j in the copy
+            permCopy.insert(j, nums[i])
+            
+            # Add the new permutation to the current list of permutations
+            currPerm.append(permCopy)
+ 
+    # Return the list of all permutations that include nums[i]
+    return currPerm
+
+# Wrapper function to start the recursive backtracking
+def recursivePermutation(nums):
+    return backtrack(0, nums)
+
+# Example usage: generate permutations for the list [1, 2, 3, 4]
+print(recursivePermutation([1, 2, 3, 4]))
+
+....................................................................................................................................................
+Iterative Solution:
+
+# Function to generate permutations iteratively
+def iterativePermutation(nums):
+
+    # Start with a list containing an empty list as the initial permutation
+    perms = [[]]
+
+    # Iterate through each number in the input list
+    for i in nums:
+        # This will store the new set of permutations including the current number i
+        currperms = []
+        
+        # Iterate through each permutation generated so far
+        for perm in perms:
+            # For each permutation, insert the current number i at every possible position
+            for j in range(len(perm) + 1):
+                # Create a copy of the current permutation
+                permCopy = perm.copy()
+                
+                # Insert the current number i at position j in the copy
+                permCopy.insert(j, i)
+                
+                # Add the new permutation to the current list of permutations
+                currperms.append(permCopy)
+        
+        # Update perms with the new set of permutations
+        perms = currperms 
+
+    # Return the list of all permutations
+    return perms
+
+# Example usage: generate permutations for the list [1, 2, 3, 4]
+print(iterativePermutation([1, 2, 3, 4]))
+
+................................................................................................................................................

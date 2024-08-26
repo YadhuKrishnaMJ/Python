@@ -1,0 +1,223 @@
+.................................................................................................................
+Easy
+.................................................................................................................
+Contains Duplicate:
+
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        #create a set of nums
+        myset = set(nums)
+        #if there is difference of elements, then it contains duplicates
+        return True if len(myset) != len(nums) else False
+
+.................................................................................................................
+Valid Anagram:
+
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        #create two sets to store each unique occurence of s & t
+        s1 = set()
+        s2 = set()
+        #iterate and add the letters in both sets
+        for i in s:
+            s1.add(i)
+        for i in t:
+            s2.add(i)
+        #check if both sets are equal
+        return True if s1 == s2 else False
+..................................................................................................................
+Two Sum:
+
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        #create a dictionary
+        map = {}
+        n = len(nums)
+        #iterate the nums array
+        for i in range(n):
+            #find complement (x + y = z, y = z - x)
+            complement = target - nums[i]
+            #if complement exists then return its index and current element index
+            if complement in map:
+                return [map[complement], i]
+            #add current element to the map with the index
+            map[nums[i]] = i
+...................................................................................................................
+Medium
+...................................................................................................................
+Group Anagram:
+
+class Solution:
+    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
+        #map to store sorted strings as keys and original string as value
+        map = {}
+        for str in strs:
+            #sort and join the string
+            key = ''.join(sorted(str))
+            #if key is in map append it 
+            if key in map:
+                map[key].append(str)
+            #else make a new entry
+            else:
+                map[key] = [str]
+        #return map values
+        return map.values()
+..................................................................................................................
+Top K Frequent elements:
+
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        #create map for storing element:frequency
+        map = {}
+        for i in nums:
+            if i in map:
+                map[i] += 1
+            else:
+                 map[i] = 1
+        
+        #initialize list
+        myList = [[] for i in range(len(nums)+1)]
+
+        #append element at frequency as index
+        for element, freq in map.items():
+            myList[freq].append(element)
+
+        #iterate from highest index(frequency) collect elements in result
+        #until result len >= k
+        result = []
+        for i in range(len(nums), -1, -1):
+            if len(result) < k:
+                result.extend(myList[i])
+            else:
+                break
+        return result
+
+........................................................................................................................
+string Encode and Decode:
+
+class Solution:
+
+    def encode(self, strs: List[str]) -> str:
+        #Result string
+        result = ""
+        #store in form of len#stringlen#string...
+        for i in strs:
+            result+= str(len(i)) + '#' + str(i)
+        return result    
+
+
+    def decode(self, s: str) -> List[str]:
+        #index pointer
+        index = 0
+        #result array
+        result = []
+        #loop till end
+        while(index < len(s)):
+            #collect len number (till # for multiple digits)
+            numstr = ''
+            while(s[index]!='#'):
+                numstr += str(s[index])
+                index = index + 1
+            num = int(numstr)
+
+            #string for appending to result list
+            string = ''
+            #skip one index of the #
+            index = index + 1
+            #till num (len) append characters to the string
+            while(num > 0):
+                string += s[index]
+                index = index + 1
+                num = num - 1
+            #append the string to result
+            result.append(string) 
+            #no need to increment index as its already incremented to next len
+        return result
+        
+        
+............................................................................................................................................
+Product of Array Except Self:
+
+
+class Solution:
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        #Compute premultiples
+        premul = [1 for i in range(len(nums))]
+        #initialize first element same
+        premul[0] = nums[0]
+        #compute premul
+        for i in range(1,len(nums)):
+            premul[i] = nums[i] * premul[i-1] 
+
+        #compute postmultiples
+        postmul = [1 for i in range(len(nums))]
+        #initialize last element same
+        postmul[len(nums) - 1] = nums[len(nums) - 1]
+        #compute postmul
+        for i in range(len(nums) - 2, -1, -1):
+            postmul[i] = nums[i] * postmul[i+1]
+
+        #result
+        result = []
+        #iterate every element
+        for i in range(len(nums)):
+
+            #leftmost edge case
+            if i == 0:
+                result.append(postmul[i+1])
+            #rightmost edge case
+            elif i == len(nums) - 1:
+                result.append(premul[i-1])
+
+            else:
+                #mul premul i-1 with postmul i+1
+                prodExceptSelf = premul[i-1] * postmul[i+1]
+                #append it to result
+                result.append(prodExceptSelf)
+
+        return result   
+            
+.............................................................................................................................................
+Longest Consecutive Sequence:
+
+
+O(nlogn) solution:
+
+class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        #sort the array
+        nums.sort()
+        #edge cases
+        if len(nums) == 0:
+            return 0
+        if len(nums) == 1:
+            return 1
+        
+        #dict for getting unique values(discard duplicates)
+        mydict = {}
+        for i,e in enumerate(nums):
+            mydict[e] = i
+
+        #mylist has all unique values now
+        mylist = list(mydict.keys())
+        index = 1
+        result = 0
+        #iterate till end
+        while(index < len(mylist)):
+            tempMax = 0
+            #if consequtive
+            if mylist[index] - mylist[index-1] == 1:
+                #until not exceeding list len and consequtive
+                while index < len(mylist) and (mylist[index] - mylist[index-1] == 1):
+                    #count length of sequence
+                    tempMax += 1
+                    index = index + 1        
+            else:
+                index = index + 1
+            #compare with max found till now
+            result = max(result,tempMax)
+            
+        #add 1 to consider the starting element of the sequence
+        return result + 1
+ ................................................................................................................................................
+

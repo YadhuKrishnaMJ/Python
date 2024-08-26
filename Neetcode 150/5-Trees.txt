@@ -1,0 +1,389 @@
+..................................................................................................
+Easy
+..................................................................................................
+Invert Binary Tree:
+
+Code:
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def invertTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: TreeNode
+        """
+        #if root is null
+        if not root:
+            return 
+        #iterate to left and right subtree
+        self.invertTree(root.left)
+        self.invertTree(root.right)
+        #swap the nodes
+        root.left,root.right = root.right, root.left
+        #finally return the root
+        return root
+.................................................................................................
+Maximum Depth of a Binary Tree:
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def maxDepth(self, root):
+        #invoke findDepth function
+        return self.findDepth(root,0)
+
+    def findDepth(self,root,depth):
+        #if reached at end, return the depth
+        if not root:
+            return depth
+
+        #recursively find left and right depth
+        lftDepth = self.findDepth(root.left,depth+1)
+        rgtDepth = self.findDepth(root.right,depth+1)
+
+        #return the max depth between left and right subtree
+        return max(lftDepth,rgtDepth)
+...........................................................................................................
+Diameter of a binary Tree:
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def diameterOfBinaryTree(self, root):
+        #store a global variable for height
+        self.result = 0
+
+        #iterate a tree using dfs
+        def dfs(root):
+            #if null return 0
+            if not root:
+                return 0
+            #recursively calculate left and right
+            left = dfs(root.left)
+            right = dfs(root.right)
+            
+            #update result as max of itself and left+right
+            self.result = max(self.result, left+right)
+
+            #return 1 + left and right max
+            return 1 + max(left,right)
+
+        dfs(root)
+        return self.result
+..............................................................................................................
+Balanced Binary Tree:
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def isBalanced(self, root):
+        #Global Result
+        self.result = True
+        def dfs(root):
+            #Return 0 for leaf nodes
+            if not root:
+                return 0
+            
+            #Recursively iterate to left and right nodes
+            left = dfs(root.left)
+            right = dfs(root.right)
+            #Balance check
+            if abs(left - right) > 1:
+                self.result = False
+            #return max height, +1 to consider increase in depth for each iteration
+            return max(left,right) + 1
+        
+        dfs(root)
+        return self.result
+.......................................................................................................................
+Same Tree:
+
+My shitty solution using DFS:
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def isSameTree(self, p, q):
+        
+        #Dfs with a list
+        def dfs(root,dfsList):
+            #Add None to Null nodes
+            if not root:
+                return dfsList.append(None)
+            #Add Val of Node
+            dfsList.append(root.val)
+            #recursively call left and right nodes
+            dfs(root.left,dfsList)
+            dfs(root.right,dfsList)
+            #return the List
+            return dfsList
+        
+        #compare dfs list of both trees
+        tree1 = dfs(p,[])
+        tree2 = dfs(q,[])
+        print(tree1,tree2)
+        return tree1 == tree2
+
+Optimal DFS Solution:
+
+class Solution:
+    def isSameTree(self, p: Optional[TreeNode], q: Optional[TreeNode]) -> bool:
+        # Are both p and q None?
+        if not p and not q:
+            return True
+
+        # Is one of them None?
+        if not p or not q:
+            return False
+
+        # Are their values different?
+        if p.val != q.val:
+            return False
+
+        # Recursive call to the next level down
+        return self.isSameTree(p.left, q.left) and self.isSameTree(p.right, q.right)
+..............................................................................................
+Subtree of Another Tree:
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def isSubtree(self, root, subRoot):
+        #if subTree is null then True
+        if not subRoot:
+            return True
+        #Root tree null then false
+        if not root:
+            return False
+
+        #is root is subtree ?
+        if self.sameTree(root, subRoot):
+            return True
+
+        #check left and right subtree of tree
+        return self.isSubtree(root.left,subRoot) or self.isSubtree(root.right,subRoot)
+
+    #helper function to check same tree?
+    def sameTree(self,p,q):
+        if not p and not q:
+            return True
+        if not p or not q:
+            return False
+        if p.val != q.val:
+            return False
+        
+        return self.sameTree(p.left,q.left) and self.sameTree(p.right,q.right)
+..............................................................................................................
+Medium
+..............................................................................................................
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+class Solution(object):
+    def lowestCommonAncestor(self, root, p, q):
+        # Start from the root of the tree
+        curr = root
+        
+        # Iterate through the tree until you find the LCA or reach a leaf node
+        while curr:
+            # If both p and q are smaller than current node, move to the left child
+            if p.val < curr.val and q.val < curr.val:
+                curr = curr.left
+            
+            # If both p and q are greater than current node, move to the right child
+            elif p.val > curr.val and q.val > curr.val:
+                curr = curr.right
+            
+            # If p and q are on opposite sides of the current node, or one of them is equal to the current node,
+            # then the current node is the Lowest Common Ancestor (LCA)
+            else:
+                return curr
+...................................................................................................................
+Binary Tree Level Order Traversal:
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution(object):
+    def levelOrder(self, root):
+        # Initialize the result list to store the values level by level
+        res = []    
+        
+        # Initialize a deque (double-ended queue) to manage nodes level by level
+        queue = collections.deque()
+        
+        # Start by adding the root node to the queue
+        queue.append(root)
+
+        # Loop until the queue is empty, meaning all levels have been processed
+        while queue:
+            # Get the number of nodes in the current level (size of the queue)
+            queLen = len(queue)
+            
+            # Temporary list to store the values of nodes at the current level
+            sublist = []
+            
+            # Process each node at the current level
+            for i in range(queLen):
+                # Pop the leftmost node from the queue
+                node = queue.popleft()
+                
+                # If the node is not None, add its value to the sublist
+                if node:
+                    sublist.append(node.val)
+                    
+                    # Add the left child to the queue if it exists
+                    queue.append(node.left)
+                    
+                    # Add the right child to the queue if it exists
+                    queue.append(node.right)
+            
+            # After processing the current level, if sublist has any values, add it to the result list
+            if sublist:
+                res.append(sublist)
+        
+        # Return the result list, which contains the values of nodes level by level
+        return res
+
+..............................................................................................................................
+Binary Tree Right Side View:
+
+import collections  # Importing collections module for deque
+
+class Solution(object):
+    def rightSideView(self, root):
+        # If the tree is empty, return an empty list
+        if not root:
+            return []
+        
+        # Initialize the result list to store the rightmost element at each level
+        result = []
+        
+        # Use a queue to facilitate level order traversal (BFS)
+        curr = root
+        queue = collections.deque()
+        queue.append(curr)
+        
+        # While there are nodes to process in the queue
+        while len(queue) > 0:
+            # Get the number of nodes at the current level
+            n = len(queue)
+            temp = []
+            
+            # Process each node at the current level
+            for i in range(n):
+                node = queue.popleft()  # Remove the node from the queue
+                temp.append(node.val)  # Append the node's value to temp
+                
+                # Add the left child to the queue if it exists
+                if node.left:
+                    queue.append(node.left)
+                
+                # Add the right child to the queue if it exists
+                if node.right:
+                    queue.append(node.right)
+            
+            print(temp)  # Debug: Print the values at the current level
+            
+            # Append the rightmost value (last element) at the current level to the result
+            result.append(temp.pop())
+        
+        # Return the final list of rightmost values
+        return result
+...............................................................................................................................
+Validate Binary Search Tree:
+
+class Solution(object):
+    def isValidBST(self, root):
+        # Nested helper function to validate the BST
+        # `left` is the lower bound and `right` is the upper bound for the current node's value
+        def valid(root, left, right):
+            # Base case: if the current node is None, it's a valid subtree
+            if not root:
+                return True
+            
+            # Check if the current node's value falls within the valid range
+            # If it doesn't, the tree is not a valid BST
+            if not (root.val < right and root.val > left):
+                return False
+                
+            # Recursively validate the left and right subtrees
+            # For the left subtree, the current node's value becomes the new upper bound (right)
+            # For the right subtree, the current node's value becomes the new lower bound (left)
+            return valid(root.left, left, root.val) and valid(root.right, root.val, right)
+        
+        # Start the recursion with the full range of valid values (-inf to +inf)
+        return valid(root, float('-inf'), float('+inf'))
+
+.................................................................................................................................
+Kth smallest element in a BST:
+
+class Solution(object):
+    def kthSmallest(self, root, k):
+        """
+        Finds the k-th smallest element in a binary search tree.
+
+        Args:
+            root: The root node of the binary search tree.
+            k: The rank of the desired element.
+
+        Returns:
+            The k-th smallest element in the tree.
+        """
+
+        if not root:
+            # If the tree is empty, there's no k-th smallest element.
+            return 0
+
+        self.inList = []
+        self.inorder(root)
+        return self.inList[k-1]
+
+    def inorder(self, root):
+        """
+        Performs an inorder traversal of the binary search tree,
+        storing the visited nodes' values in a list.
+
+        Args:
+            root: The current node in the traversal.
+        """
+
+        if not root:
+            # Base case: If the current node is None, return.
+            return
+
+        self.inorder(root.left)
+        self.inList.append(root.val)
+        self.inorder(root.right)
+..........................................................................................................

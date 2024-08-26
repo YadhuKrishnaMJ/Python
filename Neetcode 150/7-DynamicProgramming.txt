@@ -1,0 +1,27 @@
+Dynamic Programming 1D
+.............................................................................................................................................
+Easy
+..............................................................................................................................................
+
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        # Start the recursive memoization process and return the result
+        result = self.memoization(n, {})
+        return result
+
+    def memoization(self, n, cache):
+        # Base case: if n is 1 or 2, return n (1 way to climb 1 stair, 2 ways to climb 2 stairs)
+        if n <= 2:
+            return n
+        
+        # Check if the result for this n is already cached
+        if n in cache:
+            return cache[n]
+        
+        # Recursive case: calculate the number of ways to climb n stairs
+        # This is done by summing the number of ways to climb (n-1) stairs and (n-2) stairs
+        cache[n] = self.memoization(n-1, cache) + self.memoization(n-2, cache)
+        
+        # Return the cached result for n
+        return cache[n]
+...................................................................................................................................................................................

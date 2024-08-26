@@ -1,0 +1,164 @@
+Medium
+..............................................................................................................................................................
+Subsets:
+
+class Solution(object):
+    def subsets(self, nums):
+        currset,subset = [],[]
+        self.backtrack(0,currset,subset,nums)
+        return subset
+
+    def backtrack(self,i,currset,subset,nums):
+        #Base case when i reached beyond end of nums
+        if i == len(nums):
+            #Append the valid subset
+            subset.append(currset.copy())
+            return
+        
+        #include the current element
+        currset.append(nums[i])
+        self.backtrack(i+1,currset,subset,nums)
+        currset.pop()
+
+        #dont include the current element
+        self.backtrack(i+1,currset,subset,nums)
+.......................................................................................................................................................................................
+Combination sum
+
+class Solution:
+    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
+        currset,subset = [],[]
+        self.backtrack(0,candidates,currset,subset,target)
+        return subset
+
+    def backtrack(self,i,nums,currset,subset,target):
+        #base case when combination is formed and equal to target
+        if i == len(nums) and sum(currset) == target:
+            subset.append(currset.copy())
+            return
+        #case when bigger combination or its sum exceeds the target
+        if i >= len(nums) or sum(currset) > target:
+            return
+            
+        #include the current num[i] and duplicates of itself
+        currset.append(nums[i])
+        self.backtrack(i,nums,currset,subset,target)
+        currset.pop()
+
+        #dont include the current num[i]
+        self.backtrack(i+1,nums,currset,subset,target)
+...................................................................................................................................................................................
+Permutations:
+
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        return self.backtrack(0,nums)
+
+    #backtrack solution
+    def backtrack(self,i,nums):
+        #return empty list of list when i reaches len of nums
+        if i == len(nums):
+            return [[]]
+
+        #currperm for current permutation
+        currperm = []
+        #recursively call for each num element
+        perms = self.backtrack(i+1,nums)
+
+        #iteratively add num[i] at every position in curr perm
+        for perm in perms:
+            for j in range(len(perm) + 1):
+                permCopy = perm.copy()
+                permCopy.insert(j,nums[i])
+                currperm.append(permCopy)
+        return currperm
+.........................................................................................................................................................
+Subsets II :
+
+class Solution:
+    def subsetsWithDup(self, nums: List[int]) -> List[List[int]]:
+        nums.sort()
+        currset, subset = [],[]
+        self.backtrack(0,nums,currset,subset)
+        return subset
+
+    def backtrack(self,i,nums,currset,subset):
+        #base case
+        if i >= len(nums):
+            subset.append(currset.copy())
+            return
+
+        #include the element
+        currset.append(nums[i])
+        self.backtrack(i + 1, nums, currset,subset)
+        currset.pop()
+
+        #dont include the element
+        while i + 1 < len(nums)  and nums[i] == nums[i+1]:
+            i += 1
+        self.backtrack(i + 1 ,nums,currset,subset)
+...................................................................................................................................................................
+Combination sum II:
+
+class Solution:
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        candidates.sort()
+        currset,subset =  [],[]
+        self.backtrack(0,candidates,currset,subset,target)
+        return subset
+
+    def backtrack(self,i,nums,currset,subset,target):
+        #base case (valid currset)
+        if i == len(nums) and sum(currset) == target:
+            subset.append(currset.copy())
+            return
+
+        #base case (invalid currset)
+        if i >= len(nums) or sum(currset) > target:
+            return
+
+        #include the current element
+        currset.append(nums[i])
+        self.backtrack(i+1,nums,currset,subset,target)
+        currset.pop()
+
+        #not include the current element
+        while i < len(nums) - 1 and nums[i] == nums[i+1]:
+            i += 1
+        self.backtrack(i+1,nums,currset,subset,target)
+
+..............................................................................................................................................................
+Word Search:
+
+class Solution:
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        #define row and col
+        ROW,COL = len(board), len(board[0])
+        #path set to prevent duplicate paths
+        path = set()
+
+        #backtrack path
+        def backtrack(r,c,i):
+            #reached end of word (successful path)
+            if i == len(word):
+                return True
+            #boundary condition,same word?,existing path? -> false
+            if r < 0 or c < 0 or r >= ROW or c >= COL or word[i] != board[r][c] or (r,c) in path:
+                return False
+
+            #Add current path, True condition
+            path.add((r,c))
+            #backtrack() all directions (or because any path)
+            res = backtrack(r+1,c,i+1) or backtrack(r-1,c,i+1) or backtrack(r,c+1,i+1) or backtrack(r,c-1,i+1) 
+            #backtrack cleanup
+            path.remove((r,c))
+            return res
+        
+        #for every position in word, call backtrack()
+        for r in range(ROW):
+            for c in range(COL):
+                if backtrack(r,c,0):
+                    return True
+        return False
+..............................................................................................................................................................................
+

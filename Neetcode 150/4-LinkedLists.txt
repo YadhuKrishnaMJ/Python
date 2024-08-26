@@ -1,0 +1,233 @@
+........................................................................
+Easy
+........................................................................
+
+Reverse Linked List
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if head and head.next: #While List is has atleast 2 nodes
+            #prev and curr 
+            prev = head
+            curr = head.next
+            #end of reversed LinkedList
+            prev.next = None
+            #Iterate and reverse the pointers
+            while curr:
+                temp = curr.next
+                curr.next = prev
+                #shift prev and curr by 1 node
+                prev = curr
+                curr = temp 
+            #prev is the head of reversed list
+            return prev
+        else:# only one or no nodes
+            return head
+...........................................................................
+
+Merge two sorted lists:
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        #Node1 and Node2 pointers to the lists
+        node1 = list1
+        node2 = list2
+        #Edge case of either list being empty
+        if not node1:
+            return node2
+        if not node2:
+            return node1
+
+        #initialize head of final merged list (smaller value)
+        if node1.val <= node2.val:
+            head = node1
+            node1 = node1.next
+        else:
+            head = node2
+            node2 = node2.next
+        
+        #pointer for traversal
+        curr = head
+        #add nodes in sorted manner until either list reaches end
+        while node1 and node2:
+            #Add the smaller node and iterate
+            if node1.val <= node2.val:
+                curr.next = node1
+                curr = curr.next
+                node1 = node1.next
+            else:
+                curr.next = node2
+                curr = curr.next
+                node2 = node2.next
+
+        #Add rest of the nodes  
+        if node1:
+            curr.next = node1
+        else:
+            curr.next = node2
+        return head
+...........................................................................................
+
+LinkedList Cycle:
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def hasCycle(self, head: Optional[ListNode]) -> bool:
+        #edge case (only one or two nodes = no cycle)
+        if not head or not head.next or not head.next.next:
+            return False
+        #slow and fast pointers
+        slow = head
+        fast = head
+        #while fast doesnt reach end
+        while fast and fast.next:
+            #iterate first
+            slow = slow.next
+            fast = fast.next.next
+            #if fast laps over slow, then cycle exists
+            if slow == fast:
+                return True
+        return False
+............................................................................................
+Medium
+............................................................................................
+
+Reorder List:
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        #edge cases containing only 2 or less nodes
+        if not head or not head.next or not head.next.next:
+            return head
+        
+        #slow fast pointers to find mid
+        slow = head
+        fast = head.next
+        #find middle of the linked list
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        #reverse the second half
+        prev = slow
+        curr = slow.next
+        prev.next = None
+        while curr:
+            temp = curr.next
+            curr.next =  prev
+            prev = curr
+            curr = temp
+        
+        #pointers of start and end after reversal
+        start = head
+        end = prev
+
+        #rearrange with alternating nodes from start and end
+        while start:
+            #two temp to store next values
+            temp1 = start.next
+            temp2 = end.next
+            #connect alternatively
+            start.next = end
+            end.next = temp1
+            #iterate forward for both pointers
+            start = temp1
+            end = temp2
+..............................................................................................
+Remove Nth node from the end of the list:
+
+My solution : Reverse once , remove , reverse again
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def reorderList(self, head: Optional[ListNode]) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        #edge cases containing only 2 or less nodes
+        if not head or not head.next or not head.next.next:
+            return head
+        
+        #slow fast pointers to find mid
+        slow = head
+        fast = head.next
+        #find middle of the linked list
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        #reverse the second half
+        prev = slow
+        curr = slow.next
+        prev.next = None
+        while curr:
+            temp = curr.next
+            curr.next =  prev
+            prev = curr
+            curr = temp
+        
+        #pointers of start and end after reversal
+        start = head
+        end = prev
+
+        #rearrange with alternating nodes from start and end
+        while start:
+            #two temp to store next values
+            temp1 = start.next
+            temp2 = end.next
+            #connect alternatively
+            start.next = end
+            end.next = temp1
+            #iterate forward for both pointers
+            start = temp1
+            end = temp2
+
+slow fast pointer approach:
+
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        dummy = ListNode(0)
+        dummy.next = head
+        fast = slow = dummy
+
+        # Move fast pointer `n` steps ahead
+        for _ in range(n):
+            fast = fast.next
+
+        # Move both fast and slow pointers until fast reaches the end
+        while fast.next:
+            fast = fast.next
+            slow = slow.next
+
+        # Remove the nth node from the end
+        slow.next = slow.next.next
+
+        return dummy.next
+
+......................................................................................................................
+

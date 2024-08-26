@@ -1,0 +1,129 @@
+.....................................................................................................
+Easy
+.....................................................................................................
+Valid parenthesis:  -> shits kinda difficult
+
+class Solution:
+    def isValid(self, s: str) -> bool:
+        #create a hashmap to store matching parenthesis
+        map = {
+            ')':'(',
+            ']':'[',
+            '}':'{'
+        }
+        stack = []
+
+        #iterate every character
+        for c in s:
+            #if c is closing 
+            if c in map: 
+                #if stack is empty and top of stack is opening (same as c)   
+                if stack and stack[-1] == map[c]:
+                    stack.pop() #remove the opening,discarding closing too
+                else:
+                    #not closed so false
+                    return False
+            # if c is opening
+            else:
+                stack.append(c) 
+        #return stack is empty = true else false
+        return stack == []
+.............................................................................................................
+Medium
+.............................................................................................................
+Min Stack:
+
+
+class MinStack:
+    #initiate a stack
+    def __init__(self):
+        self.stack = []
+
+    #push element with min val (array or array(2)) in this implementation
+    def push(self, val: int) -> None:
+        #stack both val and min same if empty stack
+        if not self.stack:
+            self.stack.append([val,val])
+        #else compare curr val and previous minval and update
+        else:
+            minVal = self.stack[-1][1]
+            minVal = min(val,minVal)
+            self.stack.append([val,minVal])
+
+    #I just love python
+    def pop(self) -> None:
+        self.stack.pop()
+
+    #return 1st element of last subarray (val)
+    def top(self) -> int:
+        return self.stack[-1][0]
+
+    #return min (2nd element) from last subarray (minVal)
+    def getMin(self) -> int:
+        return self.stack[-1][1]
+
+
+# Your MinStack object will be instantiated and called as such:
+# obj = MinStack()
+# obj.push(val)
+# obj.pop()
+# param_3 = obj.top()
+# param_4 = obj.getMin()
+...................................................................................................
+Evaluate Reverse Polish Notation:
+
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        #stack to store the numbers
+        stack = []
+        #iterate every token
+        for i in tokens:
+            #if integer then append
+            if i not in "+*-/":
+                stack.append(int(i))
+            #else apply oper to last two elements pushed
+            else:
+                e1 = stack.pop()
+                e2 = stack.pop()
+                if i == "+":
+                    stack.append(e2 + e1)
+                elif i == "-":
+                    stack.append(e2 - e1)
+                elif i == "*":
+                    stack.append(e2 * e1)
+                elif i == "/":
+                    stack.append(int(e2/e1)) #trick to truncate towards zero
+        #return only element left
+        return stack[0]
+...................................................................................................
+Generate parenthesis: -> Hard since it uses backtracking
+
+
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        # add open if open < n
+        # add close if close < open
+        # solution if open == close == n
+        stack = []
+        res = []
+
+        def backtrack(open , close):
+            #if open and close bracket equals n, then add this solution
+            if open == close == n:
+                res.append(''.join(stack))
+                return
+            #add open bracket if < n
+            if open < n:
+                stack.append('(')
+                backtrack(open + 1, close)
+                #Clear stack since global variable
+                stack.pop()
+            #add close bracket if < open
+            if close < open:
+                stack.append(')')
+                backtrack(open, close+1)
+                stack.pop()
+        #backtrack with 0 open and close  brackets
+        backtrack(0,0)
+        return res
+......................................................................................................................................

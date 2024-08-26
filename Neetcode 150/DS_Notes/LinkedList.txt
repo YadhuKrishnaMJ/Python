@@ -1,0 +1,181 @@
+LinkedList:
+.................................................
+ListNode:
+    value -> value
+    next -> pointing to next ListNode
+.................................................
+ Iteration:     O(n)
+
+    cur = ListNode1
+    while cur != null:
+        cur = cur.next
+.................................................
+Ex:
+
+class ListNode:
+    def __init__(self,n):
+        self.value = n
+        self.next = None
+
+class LinkedList:
+    def __init__(self,n):
+        self.head = ListNode(n)
+        self.tail = None
+
+    def __init__(self, arr):
+        if len(arr) > 1:
+            self.head = ListNode(arr[0])
+            curr = self.head
+            for i in range(1,len(arr)):
+                curr.next = ListNode(arr[i])
+                curr = curr.next
+                if i == len(arr) - 1:
+                    self.tail = curr
+
+    def printLinkedList(self):
+        curr = self.head
+        while curr:
+            print(curr.value)
+            curr = curr.next
+
+    def getTail(self):
+        curr = self.head
+        while curr.next:
+            curr = curr.next
+        self.tail = curr
+
+        
+myList = LinkedList([1,2,3,4,5])
+myList.printLinkedList()
+print(myList.head.value, ": head,",myList.tail.value,": tail")
+................................................. 
+Adding element at tail:    O(1)
+
+    tail.next = ListNode4
+    tail = ListNode4        #or tail = tail.next
+................................................
+Removing an Element:    O(1)
+    node.next = node.next.next
+................................................
+Removing head:      O(1)
+    head = head.next 
+
+
+................................................
+................................................
+Doubly Linked List
+................................................
+ListNode:
+    prev
+    val
+    next
+................................................
+Adding element at tail:     O(1)
+
+    tail.next = ListNode4
+    ListNode4.prev = tail
+    tail = tail.next
+................................................
+Removing Element at tail:
+
+     tail = tail.prev
+    tail.next = null 
+..................................................................................
+Note: Arbitary Access in linkedlists is not effiecient compared to dynamic arrays
+..................................................................................
+LinkedList vs Arrays:
+
+LinkedList:
+    Access ith element -> O(n)
+    Insert/Remove end -> O(1)
+    Insert/Remove middle -> O(1)
+
+Arrays:
+    Access ith element -> O(1)
+    Insert/Remove end -> O(1)
+    Insert/Remove middle -> O(n)
+...................................................................................
+...................................................................................
+Slow and Fast Pointers:
+...................................................................................
+slow pointer -> 1 step
+fast pointer -> 2 step
+
+if fastpointer reaches last node or null, then slow pointer will be at middle
+...................................................................................
+slow and fast pointers for middleoflist:
+
+def middleoflist(head):
+    slow,fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    return slow 
+....................................................................................
+Detect Cycles using Slow and Fast pointers:
+
+def hasCycle(head):
+    slow,fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow == fast:
+            return True
+    return False 
+....................................................................................
+Detect Cycle and return head of the cycle: (Floyds Algorithm)
+
+def hasCycleHead(head):
+    slow, fast = head,head
+    while fast and fast.next:
+        slow = slow.next 
+        fast = fast.next.next
+        if slow == fast:
+            break
+
+    if not fast or not fast.next:
+        return None
+    
+    slow2 = head
+    while slow2 != slow:
+        slow = slow.next 
+        slow2 = slow2.next
+    return slow
+.....................................................................................
+Copy List with random pointer:
+
+"""
+# Definition for a Node.
+class Node:
+    def __init__(self, x: int, next: 'Node' = None, random: 'Node' = None):
+        self.val = int(x)
+        self.next = next
+        self.random = random
+"""
+
+class Solution:
+    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
+        curr = head
+        #Map to map original to copy
+        map = { None : None}
+
+        #add all copy nodes to the map with original
+        while curr:
+            #Make a Copy
+            copy = Node(curr.val)
+            #store original:copy in hashmap
+            map[curr] = copy
+            curr = curr.next
+        
+        #iterate again to make the links
+        curr = head
+        while curr:
+            #get copy of curr from map
+            copy = map[curr]
+            #make links using map
+            copy.next = map[curr.next]
+            copy.random = map[curr.random]
+            curr = curr.next
+        #return copy's head
+        return map[head]
+.....................................................................................

@@ -1,0 +1,123 @@
+Dynamic Programming
+............................................
+Lets understand Dynamic Programming with Fibonacci
+
+F(0) = 0
+F(1) = 1
+F(n) = F(n-1) + F(n-2)
+.......................................................
+Bruteforce Approach
+
+def fibonacciBruteForce(n):
+    # Base case: if n is 0, return 0 as the Fibonacci number
+    if n == 0:
+        return 0
+    # Base case: if n is 1, return 1 as the Fibonacci number
+    if n == 1:
+        return 1
+    # Recursive case: sum of the two preceding Fibonacci numbers
+    return fibonacciBruteForce(n-1) + fibonacciBruteForce(n-2)
+
+# Print the 10th Fibonacci number (Note: Fibonacci sequence starts from 0)
+print(fibonacciBruteForce(10))
+
+..........................................................
+Bruteforce approach has time complexity of O(2**n)
+..........................................................
+Memoization -> remembering repeated calculations -> optimize
+..........................................................
+trick -> come up with recursive solution, then add Memoization
+......................................................................
+dp approach -> Top Down Dynamic Programming
+......................................................................
+def memoization(n, cache):
+    # Base case: if n is 0 or 1, return n as the Fibonacci number
+    if n <= 1:
+        return n
+    
+    # Check if the result for this n is already cached
+    if n in cache:
+        return cache[n]
+    
+    # Recursive case: calculate the Fibonacci number and store it in the cache
+    cache[n] = memoization(n-1, cache) + memoization(n-2, cache)
+    
+    # Return the cached result for n
+    return cache[n]
+
+# Print the 10th Fibonacci number using memoization to optimize performance
+print(memoization(10, {}))
+...........................................................................
+time complexity: O(n)
+...........................................................................
+dp approach -> Bottom Up Dynamic Programming
+...........................................................................
+
+def dp(n):
+    # Base case: if n is 0 or 1, return n as the Fibonacci number
+    if n <= 2:
+        return n
+    
+    # Initialize the list dp with the first two Fibonacci numbers (0 and 1)
+    dp = [0, 1]
+    
+    # Start the loop from index 2 to n (inclusive)
+    i = 2
+    while i <= n:
+        # Store the previous Fibonacci number temporarily
+        temp = dp[0]
+        
+        # Shift the current Fibonacci number to the previous position
+        dp[0] = dp[1]
+        
+        # Calculate the new Fibonacci number by summing the last two numbers
+        dp[1] = dp[1] + temp
+        
+        # Move to the next index
+        i += 1
+    
+    # Return the nth Fibonacci number, now stored in dp[1]
+    return dp[1]
+
+# Print the 10th Fibonacci number using the optimized DP approach with constant space
+print(dp(10))
+......................................................................................................
+Longest Palindrome length Problem using DP
+......................................................................................................
+def longestPalindrome(s):
+    # Initialize variable to store the length of the longest palindrome found
+    length = 0
+    
+    # Iterate through each character in the string
+    for i in range(len(s)):
+        
+        # Check for odd-length palindromes centered at index i
+        l, r = i, i
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            # Calculate the length of the current palindrome
+            tempLen = r - l + 1
+            # Update the maximum length if the current palindrome is longer
+            if tempLen > length:
+                length = tempLen
+            # Expand outwards from the center
+            l -= 1
+            r += 1
+        
+        # Check for even-length palindromes centered between indices i and i+1
+        l, r = i, i + 1
+        while l >= 0 and r < len(s) and s[l] == s[r]:
+            # Calculate the length of the current palindrome
+            tempLen = r - l + 1
+            # Update the maximum length if the current palindrome is longer
+            if tempLen > length:
+                length = tempLen
+            # Expand outwards from the center
+            l -= 1
+            r += 1
+    
+    # Return the length of the longest palindrome found
+    return length
+
+# Print the length of the longest palindromic substring in 'abaab'
+print(longestPalindrome('abaab'))
+.....................................................................................................................
